@@ -1,0 +1,35 @@
+{
+  "name": "wedeploy-letsencrypt",
+  "version": "1.0.0",
+  "description": "CLI and API for issuing, renewing and revoking certificates on user's behalf using Let's Encrypt",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "wedeploy",
+    "certificate",
+    "letsencrypt"
+  ],
+  "author": "Iliyan Peychev <iliyan.peychev@liferay.com>",
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "del": "^2.2.2",
+    "eslint": "^3.17.1",
+    "eslint-config-google": "^0.7.1",
+    "metal": "^2.6.4",
+    "mocha": "^3.2.0",
+    "sinon": "^1.17.7"
+  },
+  "dependencies": {
+    "greenlock": "^2.1.12",
+    "homedir": "^0.6.0",
+    "le-store-certbot": "^2.0.3",
+    "mkdirp": "^0.5.1",
+    "yargs": "^7.0.2"
+  },
+  "bin": {
+    "wel": "bin/cli.js"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "extends": ["eslint:recommended", "google"],
+  "parserOptions": {
+      "ecmaVersion": 8,
+      "sourceType": "module"
+  },
+  "globals": {
+    "RequestMock": false,
+    "assert": false,
+    "sinon": false
+  },
+  "env": {
+    "browser": true,
+    "es6": true,
+    "mocha": true,
+    "node": true
+  },
+  "rules": {
+    "camelcase": [0],
+    "comma-dangle": [2, "never"],
+    "constructor-super": "warn",
+    "max-len": [2, 120, 4],
+    "no-const-assign": "warn",
+    "no-empty": ["error", { "allowEmptyCatch": true }],
+    "no-process-env": 0,
+    "no-redeclare": "error",
+    "no-this-before-super": "warn",
+    "no-undef": "error",
+    "no-unreachable": "warn",
+    "no-unused-vars": "warn",
+    "no-use-before-define": [2, { "functions": false }],
+    "object-curly-spacing": 0,
+    "semi": "error",
+    "valid-typeof": "warn"
+  }
+}
