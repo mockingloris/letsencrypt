@@ -8,10 +8,10 @@ const path = require('path');
  */
 class WebRoot {
   /**
-	 * Constructs an {@link WebRoot} instance.
-	 * @param {!object} config Configuration options
-	 * @constructor
-	 */
+   * Constructs an {@link WebRoot} instance.
+   * @param {!object} config Configuration options
+   * @constructor
+   */
   constructor(config) {
     this.config_ = config;
   }
