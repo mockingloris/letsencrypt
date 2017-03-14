@@ -2,6 +2,12 @@
 
 <h5 align="center">Simple Node.js library and CLI to manage Let's Encrypt certificates</h5>
 
+<div align="center">
+  <a href="http://travis-ci.com/wedeploy/letsencrypt">
+    <img src="https://travis-ci.org/wedeploy/letsencrypt.svg?branch=master" alt="Travis CI" />
+  </a>
+</div>
+
 ## Install
 
 ```sh
