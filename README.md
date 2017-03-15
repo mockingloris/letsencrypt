@@ -11,7 +11,7 @@
 ## Install
 
 ```sh
-$ npm i --save-dev wedeploy-letsencrypt
+$ npm i --save wedeploy-letsencrypt
 ```
 
 If you prefer to install it globally and use the CLI, use the following command:
