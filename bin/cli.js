@@ -59,8 +59,8 @@ let argv = yargs.usage('$0 <cmd> [args]')
       type: 'string'
     },
     'fullchain-path': {
-      default: ':configDir/live/:hostname/cert.pem',
-      describe: 'Path to where new cert.pem is saved.',
+      default: ':configDir/live/:hostname/fullchain.pem',
+      describe: 'Path to where new fullchain.pem (cert + chain) is saved.',
       type: 'string'
     },
     'http-01-port': {
