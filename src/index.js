@@ -184,6 +184,27 @@ class LetsEncrypt {
 }
 
 /**
+ * Provides the default configuration options.
+ *
+ * @static
+ */
+LetsEncrypt.defaultOptions = {
+  agreeTos: true,
+  certPath: ':configDir/live/:hostname/cert.pem',
+  chainPath: ':configDir/live/:hostname/chain.pem',
+  configDir: '~/letsencrypt/etc/',
+  debug: false,
+  duplicate: false,
+  fullchainPath: ':configDir/live/:hostname/fullchain.pem',
+  http01Port: 80,
+  keyFullchainPath: ':configDir/live/:hostname/keyfullchain.pem',
+  renewWithin: 7,
+  rsaKeySize: 2048,
+  server: 'staging',
+  webrootPath: '/var/lib/haproxy'
+};
+
+/**
  * Provides the default private key path.
  *
  * @static

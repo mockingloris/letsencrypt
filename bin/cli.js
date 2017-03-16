@@ -21,22 +21,22 @@ let argv = yargs.usage('$0 <cmd> [args]')
       describe: 'Agree to the Let\'s Encrypt Subscriber Agreement.'
     },
     'cert-path': {
-      default: ':configDir/live/:hostname/cert.pem',
+      default: LetsEncrypt.defaultOptions.certPath,
       describe: 'Path to where new cert.pem is saved.',
       type: 'string'
     },
     'chain-path': {
-      default: ':configDir/live/:hostname/chain.pem',
+      default: LetsEncrypt.defaultOptions.chainPath,
       describe: 'Path to where new chain.pem is saved.',
       type: 'string'
     },
     'config-dir': {
-      default: '~/letsencrypt/etc/',
+      default: LetsEncrypt.defaultOptions.configDir,
       describe: 'Configuration directory.',
       type: 'string'
     },
     'debug': {
-      default: false,
+      default: LetsEncrypt.defaultOptions.debug,
       describe: 'Show traces and logs.',
       type: 'boolean'
     },
@@ -50,7 +50,7 @@ let argv = yargs.usage('$0 <cmd> [args]')
       type: 'string'
     },
     'duplicate': {
-      default: false,
+      default: LetsEncrypt.defaultOptions.duplicate,
       describe: 'Allow getting a certificate that duplicates an existing one/is an early renewal.',
       type: 'boolean'
     },
@@ -60,7 +60,7 @@ let argv = yargs.usage('$0 <cmd> [args]')
       type: 'string'
     },
     'fullchain-path': {
-      default: ':configDir/live/:hostname/fullchain.pem',
+      default: LetsEncrypt.defaultOptions.fullchainPath,
       describe: 'Path to where new fullchain.pem (cert + chain) is saved.',
       type: 'string'
     },
@@ -72,12 +72,12 @@ let argv = yargs.usage('$0 <cmd> [args]')
 
         return arg;
       },
-      default: 80,
+      default: LetsEncrypt.defaultOptions.http01Port,
       describe: 'Use HTTP-01 challenge type with this port.',
       type: 'number'
     },
     'key-fullchain-path': {
-      default: ':configDir/live/:hostname/keyfullchain.pem',
+      default: LetsEncrypt.defaultOptions.keyFullchainPath,
       describe: 'Path to where key + fullchain.pem is saved.',
       type: 'string'
     },
@@ -89,7 +89,7 @@ let argv = yargs.usage('$0 <cmd> [args]')
 
         return arg;
       },
-      default: 7,
+      default: LetsEncrypt.defaultOptions.renewWithin,
       describe: 'Renew certificates this many days before expiry.',
       type: 'number'
     },
@@ -101,19 +101,19 @@ let argv = yargs.usage('$0 <cmd> [args]')
 
         return arg;
       },
-      default: 2048,
+      default: LetsEncrypt.defaultOptions.rsaKeySize,
       describe: 'Size (in bits) of the RSA key.',
       type: 'number'
     },
     'server': {
-      default: 'staging',
+      default: LetsEncrypt.defaultOptions.server,
       describe: 'ACME Directory Resource URI. Default: staging server. ' +
         'Use "production" to connect to the production server.',
       choices: [greenlock.stagingServerUrl, greenlock.productionServerUrl, 'staging', 'production'],
       type: 'string'
     },
     'webroot-path': {
-      default: '/var/lib/haproxy',
+      default: LetsEncrypt.defaultOptions.webrootPath,
       describe: 'public_html / webroot path.',
       type: 'string'
     }
