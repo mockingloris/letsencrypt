@@ -4,6 +4,7 @@
 const greenlock = require('greenlock');
 const homedir = require('homedir')();
 const mkdirp = require('mkdirp');
+const pkg = require('../package.json');
 const yargs = require('yargs');
 
 let LetsEncrypt = require('../src');
@@ -120,6 +121,10 @@ let argv = yargs.usage('$0 <cmd> [args]')
   .demandCommand(1, 'Error: no command specified. You need to specify at least one command.')
   .wrap(120)
   .strict()
+  .alias('v', 'version')
+  .version(() => {
+    return pkg.version;
+  })
   .help()
   .argv;
 

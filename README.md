@@ -57,6 +57,7 @@ Options:
                          "https://acme-v01.api.letsencrypt.org/directory", "staging", "production"] [default: "staging"]
   --webroot-path        public_html / webroot path.                               [string] [default: "/var/lib/haproxy"]
   --help                Show help                                                                              [boolean]
+  -v, --version         Show version number                                                                    [boolean]
 ```
 
 To issue a certificate for a domain, you may use the following command:
