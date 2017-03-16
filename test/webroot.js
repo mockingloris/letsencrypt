@@ -1,4 +1,3 @@
-/* eslint-disable no-invalid-this */
 const WebRoot = require('../src/webroot');
 const assert = require('chai').assert;
 const crypto = require('crypto');
@@ -7,6 +6,7 @@ const fs = require('fs');
 const mkdirp = require('mkdirp');
 const path = require('path');
 
+/* eslint-disable no-invalid-this */
 describe('WebRoot', () => {
   beforeEach((done) => {
     this.tmpDir_ = '.' + crypto.randomBytes(10).toString('hex');

@@ -33,27 +33,30 @@ Commands:
   certonly  Issue/renew certificate(s)
 
 Options:
-  --account-key-path  Path to privkey.pem to use for account (default: generate new)                            [string]
-  --agree-tos         Agree to the Let's Encrypt Subscriber Agreement.                                        [required]
-  --cert-path         Path to where new cert.pem is saved.      [string] [default: ":configDir/live/:hostname/cert.pem"]
-  --chain-path        Path to where new chain.pem is saved.    [string] [default: ":configDir/live/:hostname/chain.pem"]
-  --config-dir        Configuration directory.                                  [string] [default: "~/letsencrypt/etc/"]
-  --debug             Show traces and logs.                                                   [boolean] [default: false]
-  --domains           Domain names to apply. For multiple domains use space separated list of domains as a parameter.
+  --account-key-path    Path to privkey.pem to use for account (default: generate new)                          [string]
+  --agree-tos           Agree to the Let's Encrypt Subscriber Agreement.                                      [required]
+  --cert-path           Path to where new cert.pem is saved.    [string] [default: ":configDir/live/:hostname/cert.pem"]
+  --chain-path          Path to where new chain.pem is saved.  [string] [default: ":configDir/live/:hostname/chain.pem"]
+  --config-dir          Configuration directory.                                [string] [default: "~/letsencrypt/etc/"]
+  --debug               Show traces and logs.                                                 [boolean] [default: false]
+  --domains             Domain names to apply. For multiple domains use space separated list of domains as a parameter.
                                                                                                       [array] [required]
-  --domain-key-path   Path to privkey.pem to use for domain (default: generate new)                             [string]
-  --duplicate         Allow getting a certificate that duplicates an existing one/is an early renewal.
+  --domain-key-path     Path to privkey.pem to use for domain (default: generate new)                           [string]
+  --duplicate           Allow getting a certificate that duplicates an existing one/is an early renewal.
                                                                                               [boolean] [default: false]
-  --email             Email used for registration and recovery contact.                              [string] [required]
-  --fullchain-path    Path to where new cert.pem is saved.      [string] [default: ":configDir/live/:hostname/cert.pem"]
-  --http-01-port      Use HTTP-01 challenge type with this port.                                  [number] [default: 80]
-  --renew-within      Renew certificates this many days before expiry.                             [number] [default: 7]
-  --rsa-key-size      Size (in bits) of the RSA key.                                            [number] [default: 2048]
-  --server            ACME Directory Resource URI. Default: staging server. Use "production" to connect to the
-                      production server.        [string] [choices: "https://acme-staging.api.letsencrypt.org/directory",
+  --email               Email used for registration and recovery contact.                            [string] [required]
+  --fullchain-path      Path to where new fullchain.pem (cert + chain) is saved.
+                                                           [string] [default: ":configDir/live/:hostname/fullchain.pem"]
+  --http-01-port        Use HTTP-01 challenge type with this port.                                [number] [default: 80]
+  --key-fullchain-path  Path to where key + fullchain.pem is saved.
+                                                        [string] [default: ":configDir/live/:hostname/keyfullchain.pem"]
+  --renew-within        Renew certificates this many days before expiry.                           [number] [default: 7]
+  --rsa-key-size        Size (in bits) of the RSA key.                                          [number] [default: 2048]
+  --server              ACME Directory Resource URI. Default: staging server. Use "production" to connect to the
+                        production server.      [string] [choices: "https://acme-staging.api.letsencrypt.org/directory",
                          "https://acme-v01.api.letsencrypt.org/directory", "staging", "production"] [default: "staging"]
-  --webroot-path      public_html / webroot path.                                 [string] [default: "/var/lib/haproxy"]
-  --help              Show help                                                                                [boolean]
+  --webroot-path        public_html / webroot path.                               [string] [default: "/var/lib/haproxy"]
+  --help                Show help                                                                              [boolean]
 ```
 
 To issue a certificate for a domain, you may use the following command:

@@ -75,6 +75,11 @@ let argv = yargs.usage('$0 <cmd> [args]')
       describe: 'Use HTTP-01 challenge type with this port.',
       type: 'number'
     },
+    'key-fullchain-path': {
+      default: ':configDir/live/:hostname/keyfullchain.pem',
+      describe: 'Path to where key + fullchain.pem is saved.',
+      type: 'string'
+    },
     'renew-within': {
       coerce: (arg) => {
         if (arg <= 0 || !isFinite(arg)) {
@@ -174,7 +179,8 @@ function main() {
       console.log([
           options.certPath,
           options.chainPath,
-          options.fullchainPath
+          options.fullchainPath,
+          options.keyFullchainPath
         ].join('\n')
         .replace(/:configDir/g, options.configDir)
         .replace(/:hostname/g, options.domains[0])
