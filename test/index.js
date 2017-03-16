@@ -192,7 +192,7 @@ describe('LetsEncrypt', () => {
       domains: ['foo.com'],
       domainKeyPath: path.join(this.tmpDir_, 'foo.pem'),
       fullchainPath: path.join(this.tmpDir_, 'fullchain.pem'),
-      keyFullchainPath: path.join(this.tmpDir_, 'keyfullchain.pem')
+      keyFullchainPath: path.join(this.tmpDir_, ':hostname', 'keyfullchain.pem')
     })
       .then((buffer) => {
         let data = buffer.toString('utf8');

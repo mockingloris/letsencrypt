@@ -2,6 +2,8 @@ const WebRoot = require('./webroot');
 const fs = require('fs');
 const greenlock = require('greenlock');
 const homedir = require('homedir')();
+const mkdirp = require('mkdirp');
+const path = require('path');
 const store = require('le-store-certbot');
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -24,15 +26,17 @@ class LetsEncrypt {
       };
 
       let privateKeyPath = config.domainKeyPath || LetsEncrypt.defPrivateKeyPath;
+
       privateKeyPath = normalizePath(privateKeyPath, normalizeOptions);
 
       let fullchainPath = normalizePath(config.fullchainPath, normalizeOptions);
+      let keyFullchainPath = normalizePath(config.keyFullchainPath, normalizeOptions);
 
       return Promise.all([readFile(privateKeyPath), readFile(fullchainPath)])
         .then((privateKeyData, fullchainData) => {
           const keyFullchainData = Buffer.concat(privateKeyData, fullchainData);
 
-          return writeFile(config.keyFullchainPath, keyFullchainData)
+          return writeFile(keyFullchainPath, keyFullchainData)
             .then((keyFullchainData) => {
               resolve(keyFullchainData);
             });
@@ -222,16 +226,23 @@ function readFile(filePath) {
 /**
  * Writes file content as buffer.
  * @param {!string} filePath Path to the file to be written
+ * @param {Buffer} data Data to be written
  * @return {Promise} Promise, which will be resolved with
  *   file content written as buffer
  */
 function writeFile(filePath, data) {
   return new Promise((resolve, reject) => {
-    fs.writeFile(filePath, data, (error) => {
+    mkdirp(path.dirname(filePath), (error) => {
       if (error) {
         reject(error);
       } else {
-        resolve(data);
+        fs.writeFile(filePath, data, (error) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(data);
+          }
+        });
       }
     });
   });
