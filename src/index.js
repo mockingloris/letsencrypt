@@ -226,6 +226,14 @@ class LetsEncrypt {
    */
   static async renew(gl, config) {
     const existingCertificates = await gl.check(config);
+
+    if (!existingCertificates) {
+      throw new Error(
+        `No certificate for the domains '${config.domains}' found, aborting ` +
+          'renewal attempt.'
+      );
+    }
+
     const certs = await gl.renew(config, existingCertificates);
 
     return certs;
