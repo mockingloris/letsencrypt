@@ -36,7 +36,11 @@ describe('WebRoot', () => {
   });
 
   it('should retrieve a token from the webroot path', (done) => {
-    const challengePath = path.join(this.tmpDir_, '.well-known', 'acme-challenge');
+    const challengePath = path.join(
+      this.tmpDir_,
+      '.well-known',
+      'acme-challenge'
+    );
     mkdirp(challengePath, (error) => {
       if (error) {
         throw new Error(error);
@@ -63,7 +67,11 @@ describe('WebRoot', () => {
       webrootPath: this.tmpDir_
     };
 
-    const challengePath = path.join(this.tmpDir_, '.well-known', 'acme-challenge');
+    const challengePath = path.join(
+      this.tmpDir_,
+      '.well-known',
+      'acme-challenge'
+    );
     mkdirp(challengePath, (error) => {
       if (error) {
         throw new Error(error);
@@ -82,7 +90,11 @@ describe('WebRoot', () => {
   });
 
   it('should store a token to the webroot path', (done) => {
-    const challengePath = path.join(this.tmpDir_, '.well-known', 'acme-challenge');
+    const challengePath = path.join(
+      this.tmpDir_,
+      '.well-known',
+      'acme-challenge'
+    );
     mkdirp(challengePath, (error) => {
       if (error) {
         throw new Error(error);
@@ -103,7 +115,11 @@ describe('WebRoot', () => {
   });
 
   it('should store a token to the default webroot path', (done) => {
-    const challengePath = path.join(this.tmpDir_, '.well-known', 'acme-challenge');
+    const challengePath = path.join(
+      this.tmpDir_,
+      '.well-known',
+      'acme-challenge'
+    );
     mkdirp(challengePath, (error) => {
       if (error) {
         throw new Error(error);
@@ -124,7 +140,11 @@ describe('WebRoot', () => {
   });
 
   it('should remove a token from the webroot path', (done) => {
-    const challengePath = path.join(this.tmpDir_, '.well-known', 'acme-challenge');
+    const challengePath = path.join(
+      this.tmpDir_,
+      '.well-known',
+      'acme-challenge'
+    );
     mkdirp(challengePath, (error) => {
       if (error) {
         throw new Error(error);
@@ -151,7 +171,11 @@ describe('WebRoot', () => {
       webrootPath: this.tmpDir_
     };
 
-    const challengePath = path.join(this.tmpDir_, '.well-known', 'acme-challenge');
+    const challengePath = path.join(
+      this.tmpDir_,
+      '.well-known',
+      'acme-challenge'
+    );
     mkdirp(challengePath, (error) => {
       if (error) {
         throw new Error(error);

@@ -25,25 +25,31 @@ class LetsEncrypt {
         hostname: config.domains[0]
       };
 
-      let privateKeyPath = config.domainKeyPath || LetsEncrypt.defPrivateKeyPath;
+      let privateKeyPath =
+        config.domainKeyPath || LetsEncrypt.defPrivateKeyPath;
 
       privateKeyPath = normalizePath(privateKeyPath, normalizeOptions);
 
       let fullchainPath = normalizePath(config.fullchainPath, normalizeOptions);
-      let keyFullchainPath = normalizePath(config.keyFullchainPath, normalizeOptions);
+      let keyFullchainPath = normalizePath(
+        config.keyFullchainPath,
+        normalizeOptions
+      );
 
       return Promise.all([readFile(privateKeyPath), readFile(fullchainPath)])
         .then((privateKeyData, fullchainData) => {
           const keyFullchainData = Buffer.concat(privateKeyData, fullchainData);
 
-          return writeFile(keyFullchainPath, keyFullchainData)
-            .then((keyFullchainData) => {
-              resolve(keyFullchainData);
-            });
-      })
-      .catch((error) => {
-        reject(error);
-      });
+          return writeFile(
+            keyFullchainPath,
+            keyFullchainData
+          ).then((keyFullchainData) => {
+            resolve(keyFullchainData);
+          });
+        })
+        .catch((error) => {
+          reject(error);
+        });
     });
   }
 
@@ -120,17 +126,45 @@ class LetsEncrypt {
    * Retrieves certificate for specific domain(s).
    *
    * @static
-   * @method getCertificate
+   * @method generateCertificate
    * @param {!object} config Configuration options
    * @return {Promise} Returns Promise, which will be fulfilled once the
-   *   certificates for the specified domain(s) are issued and renewed,
+   *   certificates for the specified domain(s) are issued or renewed,
    *   if renewing process was requested
    */
-  static async getCertificate(config) {
+  static async generateCertificate(config) {
+    config.domainKeyPath =
+      config.domainKeyPath || LetsEncrypt.defPrivateKeyPath;
+    config.server = normalizeServerUrl(config.server);
+
     let store = LetsEncrypt.createStore(config);
     let glInst = LetsEncrypt.createGreenlockInstance(store, config);
 
-    let certs = await LetsEncrypt.register(glInst, config);
+    const certs = await LetsEncrypt.register(glInst, config);
+    await LetsEncrypt.concatenateKeyAndFullchain(config);
+
+    return certs;
+  }
+
+  /**
+   * Renews the certificate for specific domain(s). If the certificate was not
+   * renewable, an exception will be thrown with a property `code` which value
+   * will be `E_NOT_RENEWABLE`.
+   *
+   * @param {object} config Configuration options
+   * @return {Promise} Returns Promise, which will be fulfilled once the
+   *   certificates for the specified domain(s) renewed,
+   *   if renewing process was requested
+   */
+  static async renewCertificate(config) {
+    config.domainKeyPath =
+      config.domainKeyPath || LetsEncrypt.defPrivateKeyPath;
+    config.server = normalizeServerUrl(config.server);
+
+    let store = LetsEncrypt.createStore(config);
+    let glInst = LetsEncrypt.createGreenlockInstance(store, config);
+
+    const certs = await LetsEncrypt.renew(glInst, config);
     await LetsEncrypt.concatenateKeyAndFullchain(config);
 
     return certs;
@@ -165,21 +199,36 @@ class LetsEncrypt {
    *   certificates for the specified domain(s) are issued and renewed,
    *   if renewing process was requested
    */
-  static register(gl, config) {
-    return gl.register({
-      agreeTos: config.agreeTos,
-      challengeType: 'http-01',
-      debug: config.debug,
-      domains: config.domains,
-      email: config.email,
-      rsaKeySize: config.rsaKeySize
-    }).then((certs) => {
-      if (!certs._renewing) {
+  static async register(gl, config) {
+    return gl
+      .register({
+        agreeTos: config.agreeTos,
+        challengeType: 'http-01',
+        debug: config.debug,
+        domains: config.domains,
+        email: config.email,
+        rsaKeySize: config.rsaKeySize
+      })
+      .then((certs) => {
         return certs;
-      } else {
-        return certs._renewing;
-      }
-    });
+      });
+  }
+
+  /**
+   * Renews a certificate for the provided domain.
+   *
+   * @static
+   * @method renew
+   * @param {!object} gl Greenlock instance
+   * @param {!object} config Object, providing configuration params for Greenlock
+   * @return {Promise} Returns Promise, which will be fulfilled once the
+   *   certificates for the specified domain(s) are renewed
+   */
+  static async renew(gl, config) {
+    const existingCertificates = await gl.check(config);
+    const certs = await gl.renew(config, existingCertificates);
+
+    return certs;
   }
 }
 
@@ -224,6 +273,25 @@ function normalizePath(path, config) {
     .replace(/:hostname/g, config.hostname);
 
   return path;
+}
+
+/**
+ * Normalizes the provider ACME server Url. If `staging` or `production` are
+ * passed, they will be replaced with the real staging or production Url.
+ * Otherwise, the param will be left untouched.
+ * @param {!string} url The ACME server url
+ * @return {string} The real staging or production Url
+ */
+function normalizeServerUrl(url) {
+  let normalizedUrl = url;
+
+  if (url === 'staging') {
+    normalizedUrl = greenlock.stagingServerUrl;
+  } else if (url === 'production') {
+    normalizedUrl = greenlock.productionServerUrl;
+  }
+
+  return normalizedUrl;
 }
 
 /**
