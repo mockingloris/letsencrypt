@@ -31,8 +31,17 @@ $ wel <cmd> [args]
 
 Commands:
   certonly  Issue/renew certificate(s)
+  renew     Renew certificate(s)
 
 Options:
+  --help         Show help                                                                                     [boolean]
+  -v, --version  Show version number                                                                           [boolean]
+```
+
+The options for `certonly` and `renew` commands are the same and they are:
+```
+Options:
+  --help                Show help                                                                              [boolean]
   --account-key-path    Path to privkey.pem to use for account (default: generate new)                          [string]
   --agree-tos           Agree to the Let's Encrypt Subscriber Agreement.                                      [required]
   --cert-path           Path to where new cert.pem is saved.    [string] [default: ":configDir/live/:hostname/cert.pem"]
@@ -56,7 +65,6 @@ Options:
                         production server.      [string] [choices: "https://acme-staging.api.letsencrypt.org/directory",
                          "https://acme-v01.api.letsencrypt.org/directory", "staging", "production"] [default: "staging"]
   --webroot-path        public_html / webroot path.                               [string] [default: "/var/lib/haproxy"]
-  --help                Show help                                                                              [boolean]
   -v, --version         Show version number                                                                    [boolean]
 ```
 
@@ -65,19 +73,33 @@ To issue a certificate for a domain, you may use the following command:
 $ wel certonly --agree-tos --domains example.com www.example.com --email admin@mycompany.com --config-dir ~/cfg-dir --server staging --webroot-path /var/lib/haproxy
 ```
 
-The command will validate the domain `example.com` using HTTP challenge and register or renew a certificate for it. The server (HAProxy for example) should be able to serve files from `/var/lib/haproxy` directory.
+The command will validate the `example.com` and `www.example.com` using HTTP challenge and register or renew a certificate for it. The server (HAProxy for example) should be able to serve files from `/var/lib/haproxy` directory.
 
 ### Using as API
 
-In an application, require WeDeploy Let's Encrypt implementation and call `getCertificate` method, passing configuration options as properties of an object. The function returns a `Promise`, which will be fulfilled with the registered certificates. The certificates will be stored to the configuration directory (`configDir` property) already.
+In an application, require WeDeploy Let's Encrypt implementation and call `generateCertificate` method, passing configuration options as properties of an object. The function returns a `Promise`, which will be fulfilled with the registered certificates. The certificates will be stored to the configuration directory (`configDir` property) already.
 The list of available options are the same as those, which could be specified from the command line, but in camelCase. For example, `agree-tos` should become `agreeTos` and `rsa-key-size` should become `rsaKeySize`.
 
-Example code:
+Example code for generating a certificate:
 
 ```js
 const LetsEncrypt = require('wedeploy-letsencrypt');
 
-LetsEncrypt.getCertificate(options)
+LetsEncrypt.generateCertificate(options)
+  .then((certs) => {
+    console.log('Got certificate(s) for', certs.altnames.join(', '));
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+```
+
+Example code for renewing a certificate:
+
+```js
+const LetsEncrypt = require('wedeploy-letsencrypt');
+
+LetsEncrypt.renewCertificate(options)
   .then((certs) => {
     console.log('Got certificate(s) for', certs.altnames.join(', '));
   })
