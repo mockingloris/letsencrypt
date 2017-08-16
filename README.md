@@ -75,6 +75,13 @@ $ wel certonly --agree-tos --domains example.com www.example.com --email admin@m
 
 The command will validate the `example.com` and `www.example.com` using HTTP challenge and register or renew a certificate for it. The server (HAProxy for example) should be able to serve files from `/var/lib/haproxy` directory.
 
+To renew a certificate for a domain, you may use the following command:
+```
+$ wel renew --agree-tos --domains example.com www.example.com --email admin@mycompany.com --config-dir ~/cfg-dir --server staging --webroot-path /var/lib/haproxy
+```
+
+If `--duplicate` is not specified and there is no certificate to be renewed, an exception will be thrown with a `code` property which value will be `E_NOT_RENEWABLE`.
+
 ### Using as API
 
 In an application, require WeDeploy Let's Encrypt implementation and call `generateCertificate` method, passing configuration options as properties of an object. The function returns a `Promise`, which will be fulfilled with the registered certificates. The certificates will be stored to the configuration directory (`configDir` property) already.
