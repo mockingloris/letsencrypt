@@ -7,6 +7,7 @@
     "node": ">=7.6.0"
   },
   "scripts": {
+    "format": "prettier --single-quote --no-bracket-spacing --trailing-comma es5 --write \"{bin/**/*.js,src/**/*.js,test/**/*.js,*.js}\" && eslint --fix \"{bin/**/*.js,src/**/*.js,test/**/*.js,*.js}\"",
     "test": "mocha",
     "publish-please": "publish-please",
     "prepublish": "publish-please guard"
@@ -25,6 +26,7 @@
     "eslint-config-google": "^0.7.1",
     "metal": "^2.6.4",
     "mocha": "^3.2.0",
+    "prettier": "^1.5.3",
     "publish-please": "^2.3.0",
     "sinon": "^1.17.7"
   },

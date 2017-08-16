@@ -26,7 +26,12 @@ class WebRoot {
    * @param {!Function} callback Callback function to call with the read token
    */
   get(config, domain, token, callback) {
-    let tokenFile = path.join(config.webrootPath || this.config_.webrootPath, '.well-known', 'acme-challenge', token);
+    let tokenFile = path.join(
+      config.webrootPath || this.config_.webrootPath,
+      '.well-known',
+      'acme-challenge',
+      token
+    );
 
     fs.readFile(tokenFile, 'utf8', callback);
   }
@@ -52,7 +57,11 @@ class WebRoot {
    * @param {!Function} callback Callback function to call when token is stored
    */
   set(config, domain, token, secret, callback) {
-    let challengePath = path.join((config.webrootPath || this.config_.webrootPath), '.well-known', 'acme-challenge');
+    let challengePath = path.join(
+      config.webrootPath || this.config_.webrootPath,
+      '.well-known',
+      'acme-challenge'
+    );
 
     mkdirp(challengePath, (error) => {
       if (error) {
@@ -81,7 +90,12 @@ class WebRoot {
    * @param {!Function} callback Callback function to call when token is removed
    */
   remove(config, domain, token, callback) {
-    let tokenFile = path.join(config.webrootPath || this.config_.webrootPath, '.well-known', 'acme-challenge', token);
+    let tokenFile = path.join(
+      config.webrootPath || this.config_.webrootPath,
+      '.well-known',
+      'acme-challenge',
+      token
+    );
 
     fs.unlink(tokenFile, (error) => {
       if (error) {

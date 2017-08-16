@@ -66,7 +66,10 @@ describe('LetsEncrypt', () => {
     assert.isObject(store.certificates);
     assert.isObject(store.configs);
     assert.isObject(store.keypairs);
-    assert.strictEqual(LetsEncrypt.defPrivateKeyPath, store.getOptions().domainKeyPath);
+    assert.strictEqual(
+      LetsEncrypt.defPrivateKeyPath,
+      store.getOptions().domainKeyPath
+    );
   });
 
   it('should create a Greenlock instance, passing configuration options', () => {
@@ -99,8 +102,7 @@ describe('LetsEncrypt', () => {
 
     const thenFn = sinon.spy();
 
-    LetsEncrypt.register(mockGreenlock, config)
-      .then(thenFn);
+    LetsEncrypt.register(mockGreenlock, config).then(thenFn);
 
     async.nextTick(() => {
       assert.isTrue(thenFn.calledWith(expectedResult));
@@ -109,36 +111,7 @@ describe('LetsEncrypt', () => {
     });
   });
 
-  it('should register a certificate with renewal', (done) => {
-    const config = {
-      server: 'staging'
-    };
-
-    const expectedResult = 1;
-
-    const mockResult = {
-      _renewing: expectedResult
-    };
-
-    const mockGreenlock = {
-      register: () => {
-        return Promise.resolve(mockResult);
-      }
-    };
-
-    const thenFn = sinon.spy();
-
-    LetsEncrypt.register(mockGreenlock, config)
-      .then(thenFn);
-
-    async.nextTick(() => {
-      assert.isTrue(thenFn.calledWith(expectedResult));
-
-      done();
-    });
-  });
-
-  it('should return certificate from `getCertificate` method', (done) => {
+  it('should return certificate via `generateCertificate` method', (done) => {
     let receivedGlInst;
     let receivedConfig;
 
@@ -146,7 +119,59 @@ describe('LetsEncrypt', () => {
       cert: {}
     };
 
-    const registerStub = sinon.stub(LetsEncrypt, 'register', (glInst, config) => {
+    const registerStub = sinon.stub(
+      LetsEncrypt,
+      'register',
+      (glInst, config) => {
+        receivedGlInst = glInst;
+        receivedConfig = config;
+
+        return Promise.resolve(expectedResult);
+      }
+    );
+
+    const concatenateFn = sinon.spy((config) => {
+      return Promise.resolve({
+        data: 'foo'
+      });
+    });
+
+    const concatenateStub = sinon.stub(
+      LetsEncrypt,
+      'concatenateKeyAndFullchain',
+      concatenateFn
+    );
+
+    const thenFn = sinon.spy();
+
+    const config = {
+      server: 'staging'
+    };
+
+    LetsEncrypt.generateCertificate(config).then(thenFn);
+
+    async.nextTick(() => {
+      concatenateStub.restore();
+      registerStub.restore();
+
+      assert.isTrue(thenFn.calledWith(expectedResult));
+      assert.isTrue(concatenateFn.calledOnce);
+      assert.isObject(receivedGlInst);
+      assert.isObject(receivedConfig);
+
+      done();
+    });
+  });
+
+  it('should renew certificate via `renewCertificate` method', (done) => {
+    let receivedGlInst;
+    let receivedConfig;
+
+    const expectedResult = {
+      cert: {}
+    };
+
+    const renewStub = sinon.stub(LetsEncrypt, 'renew', (glInst, config) => {
       receivedGlInst = glInst;
       receivedConfig = config;
 
@@ -159,7 +184,11 @@ describe('LetsEncrypt', () => {
       });
     });
 
-    const concatenateStub = sinon.stub(LetsEncrypt, 'concatenateKeyAndFullchain', concatenateFn);
+    const concatenateStub = sinon.stub(
+      LetsEncrypt,
+      'concatenateKeyAndFullchain',
+      concatenateFn
+    );
 
     const thenFn = sinon.spy();
 
@@ -167,15 +196,48 @@ describe('LetsEncrypt', () => {
       server: 'staging'
     };
 
-    LetsEncrypt.getCertificate(config)
-       .then(thenFn);
+    LetsEncrypt.renewCertificate(config).then(thenFn);
 
     async.nextTick(() => {
       concatenateStub.restore();
-      registerStub.restore();
+      renewStub.restore();
 
       assert.isTrue(thenFn.calledWith(expectedResult));
       assert.isTrue(concatenateFn.calledOnce);
+      assert.isObject(receivedGlInst);
+      assert.isObject(receivedConfig);
+
+      done();
+    });
+  });
+
+  it('should throw error with E_NOT_RENEWABLE code when certificate is not renewable', (done) => {
+    let receivedGlInst;
+    let receivedConfig;
+
+    let error = new Error();
+    error.code = 'E_NOT_RENEWABLE';
+
+    const renewStub = sinon.stub(LetsEncrypt, 'renew', (glInst, config) => {
+      receivedGlInst = glInst;
+      receivedConfig = config;
+
+      return Promise.reject(error);
+    });
+
+    const catchFn = sinon.spy();
+
+    const config = {
+      server: 'staging'
+    };
+
+    LetsEncrypt.renewCertificate(config).catch(catchFn);
+
+    async.nextTick(() => {
+      renewStub.restore();
+
+      assert.isTrue(catchFn.calledWith(error));
+      assert.strictEqual(error.code, 'E_NOT_RENEWABLE');
       assert.isObject(receivedGlInst);
       assert.isObject(receivedConfig);
 
@@ -192,13 +254,16 @@ describe('LetsEncrypt', () => {
       domains: ['foo.com'],
       domainKeyPath: path.join(this.tmpDir_, 'foo.pem'),
       fullchainPath: path.join(this.tmpDir_, 'fullchain.pem'),
-      keyFullchainPath: path.join(this.tmpDir_, ':hostname', 'keyfullchain.pem')
-    })
-      .then((buffer) => {
-        let data = buffer.toString('utf8');
+      keyFullchainPath: path.join(
+        this.tmpDir_,
+        ':hostname',
+        'keyfullchain.pem'
+      )
+    }).then((buffer) => {
+      let data = buffer.toString('utf8');
 
-        assert.strictEqual('foo' + 'bar', data);
-        done();
-      });
+      assert.strictEqual('foo' + 'bar', data);
+      done();
+    });
   });
 });
