@@ -1,6 +1,6 @@
 {
   "name": "wedeploy-letsencrypt",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "CLI and API for issuing, renewing and revoking certificates on user's behalf using Let's Encrypt",
   "main": "src/index.js",
   "engines": {
