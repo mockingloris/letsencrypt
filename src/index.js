@@ -160,6 +160,8 @@ class LetsEncrypt {
     config.domainKeyPath =
       config.domainKeyPath || LetsEncrypt.defPrivateKeyPath;
     config.server = normalizeServerUrl(config.server);
+    config.renewWithin =
+      (config.renewWithin || LetsEncrypt.defaultOptions.renewWithin) * DAY;
 
     let store = LetsEncrypt.createStore(config);
     let glInst = LetsEncrypt.createGreenlockInstance(store, config);

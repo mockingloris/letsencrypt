@@ -193,6 +193,7 @@ describe('LetsEncrypt', () => {
     const thenFn = sinon.spy();
 
     const config = {
+      renewWithin: 8,
       server: 'staging'
     };
 
@@ -202,10 +203,11 @@ describe('LetsEncrypt', () => {
       concatenateStub.restore();
       renewStub.restore();
 
-      assert.isTrue(thenFn.calledWith(expectedResult));
-      assert.isTrue(concatenateFn.calledOnce);
-      assert.isObject(receivedGlInst);
       assert.isObject(receivedConfig);
+      assert.isObject(receivedGlInst);
+      assert.isTrue(concatenateFn.calledOnce);
+      assert.isTrue(thenFn.calledWith(expectedResult));
+      assert.strictEqual(receivedConfig.renewWithin, 691200000); // 8 days in milliseconds
 
       done();
     });
